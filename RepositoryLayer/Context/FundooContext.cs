@@ -12,6 +12,7 @@ namespace RepositoryLayer.Context
         //Added Microsoft.EntityFrameworkCore.Design 3.1.0
         //services.AddDbContext<FundooContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:FundooDB"])); - Startup.configureservices
         //Add-Migration 
+        //Update-Database
         public FundooContext(DbContextOptions options) : base(options)
         {
         }
