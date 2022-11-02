@@ -5,10 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interface\" />
     <Folder Include="Entity\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Service\" />
+    <Folder Include="Context\" />
   </ItemGroup>
 
 </Project>
