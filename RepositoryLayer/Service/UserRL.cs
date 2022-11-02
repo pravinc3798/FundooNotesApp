@@ -114,5 +114,24 @@ namespace RepositoryLayer.Service
             }
         }
 
+        public bool ResetLink(string email, string password, string confirmPassword)
+        {
+            try
+            {
+                if (password.Equals(confirmPassword))
+                {
+                    var emailCheck = fundoContext.UserTable.FirstOrDefault(x => x.Email == email);
+                    emailCheck.UserPassword = password;
+                    fundoContext.SaveChanges();
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

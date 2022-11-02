@@ -73,5 +73,26 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
+
+        [Authorize]
+        [HttpPost]
+        [Route("ResetPassword")]
+        public IActionResult ResetPassword(string password, string confirmPassword)
+        {
+            try
+            {
+                var Email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var result = userBL.ResetLink(Email, password, confirmPassword);
+
+                if (result != false)
+                    return Ok(new { success = true, message = "password has been reset" });
+                else
+                    return BadRequest(new { success = false, message = "try again" });
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
     }
 }
