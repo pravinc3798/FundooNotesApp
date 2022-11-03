@@ -53,5 +53,23 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public IEnumerable<NoteEntity> ViewNotes(long userId)
+        {
+            try
+            {
+                var allNotes = fundoContext.NoteTable.Where(n => n.UserId == userId);
+                if (allNotes != null)
+                {
+                    return allNotes;
+                }
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

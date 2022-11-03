@@ -9,5 +9,6 @@ namespace RepositoryLayer.Interface
     public interface INoteRL
     {
         public NoteEntity AddNotes(NoteModel noteModel, long userId);
+        public IEnumerable<NoteEntity> ViewNotes(long userId);
     }
 }

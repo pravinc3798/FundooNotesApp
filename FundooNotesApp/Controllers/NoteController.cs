@@ -39,5 +39,25 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
+
+        [HttpGet]
+        [Route("ViewNotes")]
+        public IActionResult ViewNotes()
+        {
+            try
+            {
+                var userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = noteBL.ViewNotes(userID);
+
+                if (result != null)
+                    return Ok(new { success = true, message = "All notes for user : " + userID, data = result });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -28,5 +28,17 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public IEnumerable<NoteEntity> ViewNotes(long userId)
+        {
+            try
+            {
+                return noteRL.ViewNotes(userId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

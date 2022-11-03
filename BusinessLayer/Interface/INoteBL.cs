@@ -9,5 +9,6 @@ namespace BusinessLayer.Interface
     public interface INoteBL
     {
         public NoteEntity AddNotes(NoteModel noteModel, long userId);
+        public IEnumerable<NoteEntity> ViewNotes(long userId);
     }
 }
