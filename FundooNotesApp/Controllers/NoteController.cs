@@ -59,5 +59,25 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        [Route("DeleteNote")]
+        public IActionResult DeleteNote(long noteId)
+        {
+            try
+            {
+                var userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = noteBL.DeleteNote(userID, noteId);
+
+                if (result != false)
+                    return Ok(new { success = true, message = "Note Deleted" });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
