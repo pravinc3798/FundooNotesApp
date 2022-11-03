@@ -91,5 +91,36 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public NoteEntity EditNote(NoteModel noteModel, long userId, long noteId)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.Where(n => n.NoteID == noteId && n.UserId == userId).FirstOrDefault();
+
+                if (note != null)
+                {
+                    note.Title = noteModel.Title != "string" ? noteModel.Title : note.Title;
+                    note.Archive = noteModel.Archive != true ? noteModel.Archive : note.Archive;
+                    note.Color = noteModel.Color != "string" ? noteModel.Color : note.Color;
+                    note.Description = noteModel.Description != "string" ? noteModel.Description : note.Description;
+                    note.Image = noteModel.Image != "string" ? noteModel.Image : note.Image;
+                    note.Pin = noteModel.Pin != true ? noteModel.Pin : note.Pin;
+                    note.Reminder = noteModel.Reminder != DateTime.UtcNow ? noteModel.Reminder : note.Reminder;
+                    note.Trash = noteModel.Trash != true ? noteModel.Trash : note.Trash; ;
+                    note.Edited = DateTime.Now;
+
+                    fundoContext.NoteTable.Update(note);
+                    fundoContext.SaveChanges();
+                    return note;
+                }
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

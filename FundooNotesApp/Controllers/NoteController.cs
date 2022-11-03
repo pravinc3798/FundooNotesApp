@@ -79,5 +79,25 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        [Route("EditNote")]
+        public IActionResult EditNote(long noteId, NoteModel noteModel)
+        {
+            try
+            {
+                var userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = noteBL.EditNote(noteModel, userID, noteId);
+
+                if (result != null)
+                    return Ok(new { success = true, message = "Note Edited", data = result });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

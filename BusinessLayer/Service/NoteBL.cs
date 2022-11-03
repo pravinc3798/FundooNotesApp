@@ -52,5 +52,17 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public NoteEntity EditNote(NoteModel noteModel, long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.EditNote(noteModel, userId, noteId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
