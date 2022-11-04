@@ -15,6 +15,6 @@ namespace BusinessLayer.Interface
         public bool ArchiveNote(long userId, long noteId);
         public bool TrashNote(long userId, long noteId);
         public bool PinNote(long userId, long noteId);
-        .public string AddImage(string imagePath, long userId, long noteId);
+        public string AddImage(string imagePath, long userId, long noteId);
     }
 }
