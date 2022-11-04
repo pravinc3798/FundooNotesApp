@@ -198,7 +198,7 @@ namespace RepositoryLayer.Service
                     ImageUploadParams parameters = new ImageUploadParams();
 
                     parameters.File = new FileDescription(imagePath);
-                    parameters.PublicId = userId + "_" + noteId + "_" + DateTime.Now.ToShortDateString();
+                    parameters.PublicId = userId + "_" + noteId + "_" + DateTime.Now.ToString();
 
                     ImageUploadResult uploadDetails = cloudinary.Upload(parameters);
 
