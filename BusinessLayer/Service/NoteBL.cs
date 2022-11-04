@@ -100,5 +100,19 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public string AddImage(string imagePath, long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.AddImage(imagePath, userId, noteId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

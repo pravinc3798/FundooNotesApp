@@ -1,4 +1,6 @@
-﻿using CommonLayer.Model;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CommonLayer.Model;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
@@ -176,6 +178,37 @@ namespace RepositoryLayer.Service
                     return true;
                 }
                 return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public string AddImage(string imagePath, long userId, long noteId)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.Where(n => n.UserId == userId && n.NoteID == noteId).FirstOrDefault();
+
+                if (note != null)
+                {
+                    Account account = new Account("dfhribck9", "773724862418468", "C9C6v_j8H522pFoUA91z1WWjb_8");
+                    Cloudinary cloudinary = new Cloudinary(account);
+                    ImageUploadParams parameters = new ImageUploadParams();
+
+                    parameters.File = new FileDescription(imagePath);
+                    parameters.PublicId = userId + "_" + noteId + "_" + DateTime.Now.ToShortDateString();
+
+                    ImageUploadResult uploadDetails = cloudinary.Upload(parameters);
+
+                    note.Image = uploadDetails.Url.ToString();
+                    fundoContext.SaveChanges();
+
+                    return note.Image;
+                }
+                else
+                    return null;
             }
             catch (Exception)
             {

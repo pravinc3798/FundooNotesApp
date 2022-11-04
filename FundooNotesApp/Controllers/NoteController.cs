@@ -161,5 +161,25 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
+
+        [HttpPut]
+        [Route("AddImage")]
+        public IActionResult AddImage(long noteId, string imagePath)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(u => u.Type == "UserId").Value);
+                var result = noteBL.AddImage(imagePath, userId, noteId);
+
+                if (result != null)
+                    return Ok(new { success = true, message = "Done", data = result });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
