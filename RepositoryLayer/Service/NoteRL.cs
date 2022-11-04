@@ -122,5 +122,65 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public bool ArchiveNote(long userId, long noteId)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.Where(n => n.UserId == userId && n.NoteID == noteId).FirstOrDefault();
+
+                if (note != null)
+                {
+                    note.Archive = !note.Archive;
+                    fundoContext.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool PinNote(long userId, long noteId)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.Where(n => n.UserId == userId && n.NoteID == noteId).FirstOrDefault();
+
+                if (note != null)
+                {
+                    note.Pin = !note.Pin;
+                    fundoContext.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool TrashNote(long userId, long noteId)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.Where(n => n.UserId == userId && n.NoteID == noteId).FirstOrDefault();
+
+                if (note != null)
+                {
+                    note.Trash = !note.Trash;
+                    fundoContext.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

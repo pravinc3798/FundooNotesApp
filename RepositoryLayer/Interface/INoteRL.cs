@@ -12,5 +12,8 @@ namespace RepositoryLayer.Interface
         public IEnumerable<NoteEntity> ViewNotes(long userId);
         public bool DeleteNote(long userId, long noteId);
         public NoteEntity EditNote(NoteModel noteModel, long userId, long noteId);
+        public bool ArchiveNote(long userId, long noteId);
+        public bool TrashNote(long userId, long noteId);
+        public bool PinNote(long userId, long noteId);
     }
 }

@@ -64,5 +64,41 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public bool ArchiveNote(long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.ArchiveNote(userId, noteId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool PinNote(long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.PinNote(userId, noteId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool TrashNote(long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.TrashNote(userId, noteId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

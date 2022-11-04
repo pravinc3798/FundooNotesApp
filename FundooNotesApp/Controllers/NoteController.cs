@@ -60,7 +60,7 @@ namespace FundoNoteApp.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("DeleteNote")]
         public IActionResult DeleteNote(long noteId)
         {
@@ -80,7 +80,7 @@ namespace FundoNoteApp.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("EditNote")]
         public IActionResult EditNote(long noteId, NoteModel noteModel)
         {
@@ -91,6 +91,68 @@ namespace FundoNoteApp.Controllers
 
                 if (result != null)
                     return Ok(new { success = true, message = "Note Edited", data = result });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [Route("Archive")]
+        public IActionResult ArchiveNote(long noteId)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(u => u.Type == "UserId").Value);
+                var result = noteBL.ArchiveNote(userId, noteId);
+
+                if (result)
+                    return Ok(new { success = true, message = "Done" });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        [HttpPut]
+        [Route("Pin")]
+        public IActionResult PinNote(long noteId)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(u => u.Type == "UserId").Value);
+                var result = noteBL.PinNote(userId, noteId);
+
+                if (result)
+                    return Ok(new { success = true, message = "Done" });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        [HttpPut]
+        [Route("Trash")]
+        public IActionResult TrashNote(long noteId)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(u => u.Type == "UserId").Value);
+                var result = noteBL.TrashNote(userId, noteId);
+
+                if (result)
+                    return Ok(new { success = true, message = "Done" });
                 else
                     return BadRequest(new { success = false, message = "something went wrong" });
             }
