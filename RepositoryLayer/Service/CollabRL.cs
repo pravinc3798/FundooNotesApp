@@ -39,5 +39,22 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public IEnumerable ViewCollaborators(long userId, long noteId)
+        {
+            try
+            {
+                var collabs = fundoContext.CollabTable.Where(c => c.UserId == userId && c.NoteId == noteId).DefaultIfEmpty();
+                if (collabs != null)
+                {
+                    return collabs;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

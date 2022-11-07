@@ -29,5 +29,17 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public IEnumerable ViewCollaborators(long userId, long noteId)
+        {
+            try
+            {
+                return collabRL.ViewCollaborators(userId, noteId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
