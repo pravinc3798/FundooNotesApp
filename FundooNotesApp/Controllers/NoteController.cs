@@ -21,7 +21,7 @@ namespace FundoNoteApp.Controllers
         }
 
         [HttpPost]
-        [Route("AddNote")]
+        [Route("Add")]
         public IActionResult AddNote(NoteModel noteModel)
         {
             try
@@ -41,7 +41,7 @@ namespace FundoNoteApp.Controllers
         }
 
         [HttpGet]
-        [Route("ViewNotes")]
+        [Route("View")]
         public IActionResult ViewNotes()
         {
             try
@@ -61,7 +61,7 @@ namespace FundoNoteApp.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteNote")]
+        [Route("Delete")]
         public IActionResult DeleteNote(long noteId)
         {
             try
@@ -81,7 +81,7 @@ namespace FundoNoteApp.Controllers
         }
 
         [HttpPut]
-        [Route("EditNote")]
+        [Route("Edit")]
         public IActionResult EditNote(long noteId, NoteModel noteModel)
         {
             try
@@ -163,13 +163,33 @@ namespace FundoNoteApp.Controllers
         }
 
         [HttpPut]
-        [Route("AddImage")]
+        [Route("Image")]
         public IActionResult AddImage(long noteId, string imagePath)
         {
             try
             {
                 var userId = Convert.ToInt32(User.Claims.FirstOrDefault(u => u.Type == "UserId").Value);
                 var result = noteBL.AddImage(imagePath, userId, noteId);
+
+                if (result != null)
+                    return Ok(new { success = true, message = "Done", data = result });
+                else
+                    return BadRequest(new { success = false, message = "something went wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [Route("Color")]
+        public IActionResult AddColour(long noteId, string colour)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(u => u.Type == "UserId").Value);
+                var result = noteBL.AddColour(userId, noteId, colour);
 
                 if (result != null)
                     return Ok(new { success = true, message = "Done", data = result });

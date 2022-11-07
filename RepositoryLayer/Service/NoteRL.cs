@@ -215,5 +215,25 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public NoteEntity AddColour(long userId, long noteId, string colour)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.Where(n => n.UserId == userId && n.NoteID == noteId).FirstOrDefault();
+
+                if (note != null)
+                {
+                    note.Color = colour;
+                    fundoContext.SaveChanges();
+                    return note;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace BusinessLayer.Interface
         public bool TrashNote(long userId, long noteId);
         public bool PinNote(long userId, long noteId);
         public string AddImage(string imagePath, long userId, long noteId);
+        public NoteEntity AddColour(long userId, long noteId, string colour);
     }
 }
