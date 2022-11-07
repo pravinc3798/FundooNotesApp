@@ -57,5 +57,25 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
+
+        [HttpDelete]
+        [Route("Delete")]
+        public IActionResult DeleteCollaborator(long noteId, string email)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = collabBL.DeleteCollaborator(userId, noteId, email);
+
+                if (result)
+                    return Ok(new { success = true, message = "Collaborator Deleted" });
+                else
+                    return BadRequest(new { success = false, message = "Something Went Wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

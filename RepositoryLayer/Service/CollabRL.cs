@@ -56,5 +56,17 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public bool DeleteCollaborator(long userId, long noteId, string email)
+        {
+            var collabs = fundoContext.CollabTable.Where(c => c.UserId == userId && c.NoteId == noteId && c.Email == email).FirstOrDefault();
+            if (collabs != null)
+            {
+                fundoContext.CollabTable.Remove(collabs);
+                fundoContext.SaveChanges();
+                return true;
+            }
+            return false;
+        }
     }
 }
