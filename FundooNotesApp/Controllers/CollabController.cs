@@ -19,7 +19,7 @@ namespace FundoNoteApp.Controllers
         }
 
         [HttpPut]
-        [Route("AddCollaborator")]
+        [Route("Add")]
         public IActionResult AddCollaborator(long noteId, string email)
         {
 			try
@@ -36,6 +36,26 @@ namespace FundoNoteApp.Controllers
 			{
 				throw;
 			}
+        }
+
+        [HttpGet]
+        [Route("View")]
+        public IActionResult ViewCollaborator(long noteId)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = collabBL.ViewCollaborators(userId, noteId);
+
+                if (result != null)
+                    return Ok(new { success = true, data = result });
+                else
+                    return BadRequest(new { success = false, message = "Something Went Wrong" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
