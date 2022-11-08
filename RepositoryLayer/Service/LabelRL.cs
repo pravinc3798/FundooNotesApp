@@ -111,5 +111,68 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public NoteLabelEntity AddLabelToNote(long userId, long noteId, long labelId)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.FirstOrDefault(n => n.UserId == userId && n.NoteID == noteId);
+                var label = fundoContext.LabelTable.FirstOrDefault(l => l.UserId == userId && l.LabelId == labelId);
+
+                if (note != null && label != null)
+                {
+                    NoteLabelEntity noteLabel = new NoteLabelEntity()
+                    {
+                        NoteId = noteId,
+                        LabelId = labelId
+                    };
+
+                    fundoContext.NoteLabelTable.Add(noteLabel);
+                    fundoContext.SaveChanges();
+                    return noteLabel;
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool RemoveNoteLabel(long userId, long noteId, long labelId)
+        {
+            try
+            {
+                var note = fundoContext.NoteTable.FirstOrDefault(n => n.UserId == userId && n.NoteID == noteId);
+                var noteLabel = fundoContext.NoteLabelTable.FirstOrDefault(nl => nl.NoteId == noteId && nl.LabelId == labelId);
+
+                if (note != null && noteLabel != null)
+                {
+                    fundoContext.NoteLabelTable.Remove(noteLabel);
+                    fundoContext.SaveChanges();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable<NoteLabelEntity> ViewLabelsForNote(long userId, long noteId)
+        {
+            var note = fundoContext.NoteTable.FirstOrDefault(n => n.UserId == userId && n.NoteID == noteId);
+
+            if (note != null)
+            {
+                var labels = fundoContext.NoteLabelTable.Where(nl => nl.NoteId == noteId).DefaultIfEmpty();
+                return labels;
+            }
+
+            return null;
+        }
     }
 }

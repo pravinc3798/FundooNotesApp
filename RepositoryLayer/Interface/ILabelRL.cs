@@ -11,5 +11,8 @@ namespace RepositoryLayer.Interface
         public LabelEntity EditLabel(long userId, long labelId, string name);
         public bool DeleteLabel(long userId, long labelId);
         public IEnumerable<LabelEntity> ViewLabel(long userId);
+        public NoteLabelEntity AddLabelToNote(long userId, long noteId, long labelId);
+        public bool RemoveNoteLabel(long userId, long noteId, long labelId);
+        public IEnumerable<NoteLabelEntity> ViewLabelsForNote(long userId, long noteId);
     }
 }

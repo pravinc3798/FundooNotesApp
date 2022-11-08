@@ -96,5 +96,65 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
+
+        [Route("AddNoteLabel")]
+        [HttpPost]
+        public IActionResult AddLabelToNote(long noteId, long labelId)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = labelBL.AddLabelToNote(userId, noteId, labelId);
+
+                if (result != null)
+                    return Ok(new { success = true, message = "Label Added", data = result });
+                else
+                    return BadRequest(new { success = false, message = "Something went wrong" });
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        [Route("RemoveNoteLabel")]
+        [HttpDelete]
+        public IActionResult RemoveNoteLabel(long noteId, long labelId)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = labelBL.RemoveNoteLabel(userId, noteId, labelId);
+
+                if (result)
+                    return Ok(new { success = true, message = "Label Deleted" });
+                else
+                    return BadRequest(new { success = false, message = "Something went wrong" });
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        [Route("ViewNoteLabels")]
+        [HttpGet]
+        public IActionResult ViewNoteLabel(long noteId)
+        {
+            try
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                var result = labelBL.ViewLabelsForNote(userId, noteId);
+
+                if (result != null)
+                    return Ok(new { success = true, message = "Labels for note : " + noteId, data = result });
+                else
+                    return BadRequest(new { success = false, message = "Something went wrong" });
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
     }
 }

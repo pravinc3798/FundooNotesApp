@@ -63,5 +63,41 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public NoteLabelEntity AddLabelToNote(long userId, long noteId, long labelId)
+        {
+            try
+            {
+                return labelRL.AddLabelToNote(userId, noteId, labelId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool RemoveNoteLabel(long userId, long noteId, long labelId)
+        {
+            try
+            {
+                return labelRL.RemoveNoteLabel(userId, noteId, labelId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable<NoteLabelEntity> ViewLabelsForNote(long userId, long noteId)
+        {
+            try
+            {
+                return labelRL.ViewLabelsForNote(userId, noteId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
