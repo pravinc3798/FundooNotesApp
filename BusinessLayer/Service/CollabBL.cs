@@ -30,7 +30,7 @@ namespace BusinessLayer.Service
             }
         }
 
-        public IEnumerable ViewCollaborators(long userId, long noteId)
+        public IEnumerable<CollabEntity> ViewCollaborators(long userId, long noteId)
         {
             try
             {

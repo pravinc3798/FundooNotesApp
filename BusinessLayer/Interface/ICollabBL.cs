@@ -9,7 +9,7 @@ namespace BusinessLayer.Interface
     public interface ICollabBL
     {
         public CollabEntity AddCollaborator(long userId, long noteId, string email);
-        public IEnumerable ViewCollaborators(long userId, long noteId);
+        public IEnumerable<CollabEntity> ViewCollaborators(long userId, long noteId);
         public bool DeleteCollaborator(long userId, long noteId, string email);
     }
 }

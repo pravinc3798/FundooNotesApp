@@ -3,6 +3,7 @@ using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RepositoryLayer.Service
@@ -40,7 +41,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public IEnumerable ViewCollaborators(long userId, long noteId)
+        public IEnumerable<CollabEntity> ViewCollaborators(long userId, long noteId)
         {
             try
             {
