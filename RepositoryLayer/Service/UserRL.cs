@@ -23,6 +23,25 @@ namespace RepositoryLayer.Service
             this.configuration = configuration;
         }
 
+        private static readonly string mask = "safhajkfh28934iowqrf@#42@#$";
+        private static string Encrypt(string pass)
+        {
+            if (pass == null) return "";
+
+            pass += mask;
+
+            var encodedPass = Encoding.UTF8.GetBytes(pass);
+            return Convert.ToBase64String(encodedPass);
+        }
+
+        private static string Decrypt(string encodedPass)
+        {
+            if (encodedPass == null) return "";
+
+            var encodedBytes = Convert.FromBase64String(encodedPass);
+            var decodedPass = Encoding.UTF8.GetString(encodedBytes);
+            return decodedPass.Substring(0, decodedPass.Length - mask.Length);
+        }
         public UserEntity Registration(UserRegistrationModel userRegistrationModel)
         {
             try
@@ -32,7 +51,7 @@ namespace RepositoryLayer.Service
                     FirstName = userRegistrationModel.FirstName,
                     LastName = userRegistrationModel.LastName,
                     Email = userRegistrationModel.Email,
-                    UserPassword = userRegistrationModel.UserPassword
+                    UserPassword = Encrypt(userRegistrationModel.UserPassword)
                 };
 
                 fundoContext.UserTable.Add(userEntity);
@@ -56,7 +75,7 @@ namespace RepositoryLayer.Service
             try
             {
                 //var user = fundoContext.UserTable.Where(d => d.Email == loginModel.Email && d.UserPassword == loginModel.UserPassword).Select(d => d.FirstName).FirstOrDefault();
-                var userDetails = fundoContext.UserTable.Where(d => d.Email == loginModel.Email && d.UserPassword == loginModel.UserPassword).FirstOrDefault();
+                var userDetails = fundoContext.UserTable.Where(d => d.Email == loginModel.Email && d.UserPassword == Encrypt(loginModel.UserPassword)).FirstOrDefault();
                 if (userDetails != null)
                 {
                     var result = GenerateSecurityToken(userDetails.Email, userDetails.UserId);
