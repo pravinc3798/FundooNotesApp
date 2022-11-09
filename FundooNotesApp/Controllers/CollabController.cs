@@ -1,8 +1,14 @@
 ﻿using BusinessLayer.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using RepositoryLayer.Entity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundoNoteApp.Controllers
 {
@@ -12,10 +18,12 @@ namespace FundoNoteApp.Controllers
     public class CollabController : ControllerBase
     {
         private readonly ICollabBL collabBL;
+        private readonly IDistributedCache distributedCache;
 
-        public CollabController(ICollabBL collabBL)
+        public CollabController(ICollabBL collabBL, IDistributedCache distributedCache)
         {
             this.collabBL = collabBL;
+            this.distributedCache = distributedCache;
         }
 
         [HttpPut]
@@ -40,12 +48,37 @@ namespace FundoNoteApp.Controllers
 
         [HttpGet]
         [Route("View")]
-        public IActionResult ViewCollaborator(long noteId)
+        public async Task<IActionResult> ViewCollaborator(long noteId)
         {
             try
             {
                 var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
-                var result = collabBL.ViewCollaborators(userId, noteId);
+
+                IEnumerable<CollabEntity> result;
+                string key = "CollabsForNote_" + noteId + "_User_" + userId.ToString();
+                string serializedData;
+                var encodedData = await distributedCache.GetAsync(key);
+
+                if (encodedData != null)
+                {
+                    serializedData = Encoding.UTF8.GetString(encodedData);
+                    result = JsonConvert.DeserializeObject<IEnumerable<CollabEntity>>(serializedData);
+                }
+                else
+                {
+                    result = collabBL.ViewCollaborators(userId, noteId);
+
+                    if (result != null)
+                    {
+                        serializedData = JsonConvert.SerializeObject(result);
+                        encodedData = Encoding.UTF8.GetBytes(serializedData);
+                        var options = new DistributedCacheEntryOptions()
+                            .SetSlidingExpiration(TimeSpan.FromMinutes(2))
+                            .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20));
+
+                        await distributedCache.SetAsync(key, encodedData, options);
+                    }
+                }
 
                 if (result != null)
                     return Ok(new { success = true, data = result });

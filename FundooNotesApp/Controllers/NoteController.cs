@@ -2,9 +2,15 @@
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using RepositoryLayer.Context;
+using RepositoryLayer.Entity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundoNoteApp.Controllers
 {
@@ -14,10 +20,12 @@ namespace FundoNoteApp.Controllers
     public class NoteController : ControllerBase
     {
         private readonly INoteBL noteBL;
+        private readonly IDistributedCache distributedCache;
 
-        public NoteController(INoteBL noteBL)
+        public NoteController(INoteBL noteBL, IDistributedCache distributedCache)
         {
             this.noteBL = noteBL;
+            this.distributedCache = distributedCache;
         }
 
         [HttpPost]
@@ -39,15 +47,38 @@ namespace FundoNoteApp.Controllers
                 throw;
             }
         }
-
         [HttpGet]
         [Route("View")]
-        public IActionResult ViewNotes()
+        public async Task<IActionResult> ViewNotes()
         {
             try
             {
                 var userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
-                var result = noteBL.ViewNotes(userID);
+
+                IEnumerable<NoteEntity> result;
+                string serializedData;
+                string key = "NotesForUser_" + userID.ToString();
+                var encodedData = await distributedCache.GetAsync(key);
+
+                if (encodedData != null)
+                {
+                    serializedData = Encoding.UTF8.GetString(encodedData);
+                    result = JsonConvert.DeserializeObject<IEnumerable<NoteEntity>>(serializedData);
+                }
+                else
+                {
+                    result = noteBL.ViewNotes(userID);
+
+                    if (result != null)
+                    {
+                        serializedData = JsonConvert.SerializeObject(result);
+                        encodedData = Encoding.UTF8.GetBytes(serializedData);
+                        var options = new DistributedCacheEntryOptions()
+                            .SetSlidingExpiration(TimeSpan.FromMinutes(2))
+                            .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10));
+                        await distributedCache.SetAsync(key, encodedData, options);
+                    }
+                }
 
                 if (result != null)
                     return Ok(new { success = true, message = "All notes for user : " + userID, data = result });

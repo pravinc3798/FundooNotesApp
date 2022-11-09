@@ -3,6 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using RepositoryLayer.Entity;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundoNoteApp.Controllers
 {
@@ -12,9 +18,11 @@ namespace FundoNoteApp.Controllers
     public class LabelController : ControllerBase
     {
         private readonly ILabelBL labelBL;
-        public LabelController(ILabelBL labelBL)
+        private readonly IDistributedCache distributedCache;
+        public LabelController(ILabelBL labelBL, IDistributedCache distributedCache)
         {
             this.labelBL = labelBL;
+            this.distributedCache = distributedCache;
         }
 
         [Route("Add")]
@@ -139,19 +147,43 @@ namespace FundoNoteApp.Controllers
 
         [Route("ViewNoteLabels")]
         [HttpGet]
-        public IActionResult ViewNoteLabel(long noteId)
+        public async Task<IActionResult> ViewNoteLabel(long noteId)
         {
             try
             {
                 var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
-                var result = labelBL.ViewLabelsForNote(userId, noteId);
+
+                IEnumerable<NoteLabelEntity> result;
+                string key = "LabelForNote_" + noteId + "_User_" + userId.ToString();
+                string serializedData;
+                var encodedData = await distributedCache.GetAsync(key);
+
+                if (encodedData != null)
+                {
+                    serializedData = Encoding.UTF8.GetString(encodedData);
+                    result = JsonConvert.DeserializeObject<IEnumerable<NoteLabelEntity>>(serializedData);
+                }
+                else
+                {
+                    result = labelBL.ViewLabelsForNote(userId, noteId);
+
+                    if (result != null)
+                    {
+                        serializedData = JsonConvert.SerializeObject(result);
+                        encodedData = Encoding.UTF8.GetBytes(serializedData);
+                        var options = new DistributedCacheEntryOptions()
+                            .SetSlidingExpiration(TimeSpan.FromMinutes(2))
+                            .SetAbsoluteExpiration(DateTime.Now.AddMinutes(20));
+                        await distributedCache.SetAsync(key, encodedData, options);
+                    }
+                }
 
                 if (result != null)
                     return Ok(new { success = true, message = "Labels for note : " + noteId, data = result });
                 else
                     return BadRequest(new { success = false, message = "Something went wrong" });
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw;
             }
