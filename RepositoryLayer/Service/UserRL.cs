@@ -75,7 +75,7 @@ namespace RepositoryLayer.Service
             try
             {
                 //var user = fundoContext.UserTable.Where(d => d.Email == loginModel.Email && d.UserPassword == loginModel.UserPassword).Select(d => d.FirstName).FirstOrDefault();
-                var userDetails = fundoContext.UserTable.Where(d => d.Email == loginModel.Email && d.UserPassword == Encrypt(loginModel.UserPassword)).FirstOrDefault();
+                var userDetails = fundoContext.UserTable.Where(d => d.Email == loginModel.Email && Decrypt(d.UserPassword) == loginModel.UserPassword).FirstOrDefault();
                 if (userDetails != null)
                 {
                     var result = GenerateSecurityToken(userDetails.Email, userDetails.UserId);
@@ -137,10 +137,11 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                if (password.Equals(confirmPassword))
+                var emailCheck = fundoContext.UserTable.FirstOrDefault(x => x.Email == email);
+
+                if (password.Equals(confirmPassword) && emailCheck != null)
                 {
-                    var emailCheck = fundoContext.UserTable.FirstOrDefault(x => x.Email == email);
-                    emailCheck.UserPassword = password;
+                    emailCheck.UserPassword = Encrypt(password);
                     fundoContext.SaveChanges();
                     return true;
                 }
