@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using System;
@@ -19,11 +20,13 @@ namespace FundoNoteApp.Controllers
     {
         private readonly ICollabBL collabBL;
         private readonly IDistributedCache distributedCache;
+        private readonly ILogger<CollabController> logger;
 
-        public CollabController(ICollabBL collabBL, IDistributedCache distributedCache)
+        public CollabController(ICollabBL collabBL, IDistributedCache distributedCache, ILogger<CollabController> logger)
         {
             this.collabBL = collabBL;
             this.distributedCache = distributedCache;
+            this.logger = logger;
         }
 
         [HttpPut]

@@ -3,6 +3,7 @@ using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace FundoNoteApp.Controllers
@@ -12,9 +13,12 @@ namespace FundoNoteApp.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBL;
-        public UserController(IUserBL userBL)
+        private readonly ILogger<CollabController> logger;
+
+        public UserController(IUserBL userBL, ILogger<CollabController> logger)
         {
             this.userBL = userBL;
+            this.logger = logger;
         }
 
         [HttpPost]

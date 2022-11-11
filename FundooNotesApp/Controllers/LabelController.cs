@@ -9,6 +9,7 @@ using RepositoryLayer.Entity;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace FundoNoteApp.Controllers
 {
@@ -19,10 +20,13 @@ namespace FundoNoteApp.Controllers
     {
         private readonly ILabelBL labelBL;
         private readonly IDistributedCache distributedCache;
-        public LabelController(ILabelBL labelBL, IDistributedCache distributedCache)
+        private readonly ILogger<CollabController> logger;
+
+        public LabelController(ILabelBL labelBL, IDistributedCache distributedCache, ILogger<CollabController> logger)
         {
             this.labelBL = labelBL;
             this.distributedCache = distributedCache;
+            this.logger = logger;
         }
 
         [Route("Add")]

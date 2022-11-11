@@ -3,6 +3,7 @@ using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
@@ -21,11 +22,13 @@ namespace FundoNoteApp.Controllers
     {
         private readonly INoteBL noteBL;
         private readonly IDistributedCache distributedCache;
+        private readonly ILogger<CollabController> logger;
 
-        public NoteController(INoteBL noteBL, IDistributedCache distributedCache)
+        public NoteController(INoteBL noteBL, IDistributedCache distributedCache, ILogger<CollabController> logger)
         {
             this.noteBL = noteBL;
             this.distributedCache = distributedCache;
+            this.logger = logger;
         }
 
         [HttpPost]
