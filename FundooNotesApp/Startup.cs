@@ -97,6 +97,16 @@ namespace FundooNotesApp
                 };
             });
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:19192/api/User/Login", "http://localhost:3000/")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,6 +121,15 @@ namespace FundooNotesApp
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fundo Note App V1"); });
 
             app.UseRouting();
+
+            app.UseCors(builder =>
+            {
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -118,6 +137,8 @@ namespace FundooNotesApp
             {
                 endpoints.MapControllers();
             });
+
+            
         }
     }
 }
